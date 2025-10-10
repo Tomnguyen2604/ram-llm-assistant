@@ -1,0 +1,5 @@
+# List of dataset names to use for fine-tuning
+rajpurkar/squad
+# Add more dataset names below, one per line
+JunnDooChoi/HandOver_Assistance_L_train
+sidfeels/visually-impaired-llm-assistance-dataset

@@ -1,0 +1,8 @@
+transformers>=4.38.0
+datasets>=2.11.0
+torch>=2.0.0  # Changed from ==2.1.0
+torchvision>=0.16.0
+torchaudio>=2.0.0
+sentencepiece>=0.1.99
+tqdm>=4.66.0
+huggingface-hub>=0.18.0
