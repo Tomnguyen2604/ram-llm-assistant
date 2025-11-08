@@ -631,7 +631,8 @@ Answer:"""
         ]
         # Use a much simpler approach that works better with T5
         # T5 works best with direct, simple prompts
-        full_prompt = f"Answer this question about natural health in a friendly, conversational way: {prompt}"
+        # Focus on directly answering the user's question accurately
+        full_prompt = f"Answer this question directly and accurately: {prompt}"
 
         # Prepare input for T5 with proper padding and attention mask
         inputs = self.tokenizer(
@@ -988,10 +989,10 @@ Answer:"""
             # Only collapse words repeated 3+ times
             text = re.sub(r"\b(\w+)(?:\s+\1){3,}\b", r"\1", text, flags=re.I)
             
-            # Allow longer responses but cap at 4 sentences for natural conversation flow
+            # Allow longer responses but cap at 8 sentences for more complete answers
             sentences = re.split(r'(?<=[\.!?])\s+', text)
-            if len(sentences) > 4:
-                text = ' '.join(sentences[:4])
+            if len(sentences) > 8:
+                text = ' '.join(sentences[:8])
             
             # Clean up extra whitespace
             text = re.sub(r'\s+', ' ', text)
@@ -1018,28 +1019,20 @@ Answer:"""
         # Strip any "User:" or "Assistant:" prefixes
         response = re.sub(r"^(User|Assistant):\s*", "", response, flags=re.I)
 
-        # Add natural, varied conversational endings
+        # Add natural, varied conversational endings only when appropriate
         import random
         natural_endings = [
-            "What do you think? Does that help clarify things?",
-            "Hope that gives you a good starting point! What else would you like to explore?",
-            "Let me know if you'd like me to dive deeper into any part of that!",
-            "Does that answer what you were wondering about?",
-            "I'd love to hear your thoughts on this - what resonates with you?",
-            "Feel free to ask if you want to explore any of this further!",
-            "What other questions are on your mind?",
-            "Hope that's helpful! I'm here if you want to chat more about it.",
-            "Curious to know - is there a particular aspect you're most interested in?",
-            "Let me know what other questions come up for you!"
+            "Is there anything specific about this you'd like to explore further?",
+            "Feel free to ask if you have more questions!",
+            "Would you like to know more about any specific aspect?"
         ]
-        
-        # Only add endings to substantial responses, and vary them naturally
-        if len(response.strip()) > 50 and not re.search(r'[?!]$', response.strip()):
-            if random.random() < 0.7:  # 70% chance to add an ending
+
+        # Only add endings occasionally to avoid cluttering the direct answer
+        # Prioritize the actual answer over conversational flourishes
+        if len(response.strip()) > 80 and not re.search(r'[?!]$', response.strip()):
+            if random.random() < 0.3:  # Only 30% chance to add an ending (was 70%)
                 ending = random.choice(natural_endings)
                 response += f" {ending}"
-        elif len(response.strip()) <= 50:
-            response += " Hope that helps!"
 
         # If requested, ensure the response is relevant to the prompt using a simple keyword overlap heuristic.
         if ensure_relevant:
